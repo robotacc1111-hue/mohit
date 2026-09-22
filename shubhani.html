@@ -1,1222 +1,1201 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Little Something ❤️</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
-        rel="stylesheet">
-
-    <style>
-        :root {
-            --bg: #07070e;
-            --bg-gradient: radial-gradient(circle at 50% 20%, #1a1028 0%, #07070e 80%);
-            --card-bg: rgba(19, 19, 32, 0.78);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --card-inner: rgba(30, 30, 48, 0.65);
-
-            --text: #f5f5fa;
-            --muted: #9c9cb0;
-
-            --pink: #ff4f91;
-            --pink-light: #ff7aad;
-            --pink-glow: rgba(255, 79, 145, 0.4);
-            --purple: #9b6cff;
-            --gold: #ffd166;
-            --green: #62e6a7;
-
-            --font-heading: 'Playfair Display', serif;
-            --font-body: 'Outfit', sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background: var(--bg);
-            background-image: var(--bg-gradient);
-            color: var(--text);
-            font-family: var(--font-body);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Ambient Background Canvas */
-        #bg-canvas,
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-        }
-
-        #bg-canvas {
-            z-index: 1;
-        }
-
-        #confetti-canvas {
-            z-index: 99;
-        }
-
-        /* App Container */
-        .app-container {
-            position: relative;
-            z-index: 10;
-            width: 92%;
-            max-width: 760px;
-            margin: 20px auto;
-        }
-
-        /* Glassmorphism Card */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 40px 32px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), 0 0 40px rgba(255, 79, 145, 0.08);
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            display: none;
-            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .card.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(16px) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* Typography */
-        h1,
-        h2 {
-            font-family: var(--font-heading);
-            letter-spacing: -0.01em;
-        }
-
-        h1 {
-            font-size: clamp(2rem, 5vw, 2.75rem);
-            color: #ffffff;
-            margin-bottom: 12px;
-        }
-
-        p.subtitle {
-            color: var(--muted);
-            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
-            font-weight: 300;
-            margin-bottom: 28px;
-            line-height: 1.5;
-        }
-
-        .badge {
-            display: inline-block;
-            background: rgba(255, 209, 102, 0.12);
-            border: 1px solid rgba(255, 209, 102, 0.3);
-            color: var(--gold);
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            margin-bottom: 18px;
-            text-transform: uppercase;
-        }
-
-        /* Input Styling */
-        .input-group {
-            margin: 28px 0;
-        }
-
-        .input-field {
-            width: 100%;
-            max-width: 340px;
-            background: var(--card-inner);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            padding: 16px 20px;
-            color: #fff;
-            font-family: var(--font-body);
-            font-size: 1.1rem;
-            text-align: center;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .input-field:focus {
-            border-color: var(--pink);
-            box-shadow: 0 0 20px var(--pink-glow);
-        }
-
-        textarea.input-field {
-            text-align: left;
-            resize: none;
-            height: 90px;
-            max-width: 500px;
-            font-size: 0.95rem;
-        }
-
-        /* Buttons */
-        .btn-group {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            margin-top: 28px;
-        }
-
-        .btn {
-            background: var(--pink);
-            color: #ffffff;
-            border: none;
-            border-radius: 16px;
-            padding: 14px 28px;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 8px 20px var(--pink-glow);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn:hover,
-        .btn:active {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(255, 79, 145, 0.5);
-            background: var(--pink-light);
-        }
-
-        .btn-secondary {
-            background: var(--card-inner);
-            color: var(--text);
-            box-shadow: none;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-secondary:hover,
-        .btn-secondary:active {
-            background: rgba(45, 45, 68, 0.8);
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
-        /* Proposal Screen Special Dodging Setup */
-        .proposal-box {
-            position: relative;
-            min-height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        #yes-btn {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 2;
-        }
-
-        #no-btn {
-            position: absolute;
-            background: var(--card-inner);
-            color: var(--muted);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 14px 28px;
-            border-radius: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: top 0.25s ease, left 0.25s ease, transform 0.2s ease;
-            z-index: 10;
-        }
-
-        /* Calendar Styling */
-        .calendar-container {
-            max-width: 440px;
-            margin: 0 auto;
-        }
-
-        .calendar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .calendar-nav {
-            background: var(--card-inner);
-            border: none;
-            color: #fff;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .calendar-nav:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-        }
-
-        .cal-day-name {
-            color: var(--muted);
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding-bottom: 8px;
-        }
-
-        .cal-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--card-inner);
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-
-        .cal-day:not(.empty):not(.past):hover {
-            border-color: var(--pink);
-            color: #fff;
-            transform: scale(1.05);
-        }
-
-        .cal-day.selected {
-            background: var(--pink) !important;
-            color: #fff !important;
-            box-shadow: 0 0 15px var(--pink-glow);
-        }
-
-        .cal-day.past {
-            opacity: 0.3;
-            cursor: not-allowed;
-            background: rgba(15, 15, 24, 0.5);
-        }
-
-        .cal-day.empty {
-            background: transparent;
-            cursor: default;
-        }
-
-        /* Filter Tabs */
-        .filter-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background: var(--card-inner);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--muted);
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.25s;
-        }
-
-        .tab-btn.active,
-        .tab-btn:hover {
-            background: var(--pink);
-            color: #fff;
-            border-color: var(--pink);
-        }
-
-        /* Options Grid (Time, Location, Outfit) */
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            max-width: 580px;
-            margin: 0 auto;
-        }
-
-        .grid-btn {
-            background: var(--card-inner);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text);
-            padding: 14px 10px;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .grid-btn span.icon {
-            font-size: 1.4rem;
-        }
-
-        .grid-btn:hover,
-        .grid-btn.selected {
-            background: var(--pink);
-            border-color: var(--pink);
-            color: #fff;
-            box-shadow: 0 0 20px var(--pink-glow);
-            transform: translateY(-2px);
-        }
-
-        /* Confirmation Ticket Card */
-        .ticket-pass {
-            background: linear-gradient(135deg, rgba(28, 28, 44, 0.95) 0%, rgba(18, 18, 30, 0.95) 100%);
-            border: 1px solid rgba(155, 108, 255, 0.35);
-            border-radius: 20px;
-            padding: 24px;
-            margin: 20px auto;
-            max-width: 540px;
-            text-align: left;
-            position: relative;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-        }
-
-        .ticket-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 14px;
-            border-bottom: 1px stroke rgba(255, 255, 255, 0.1);
-            margin-bottom: 16px;
-        }
-
-        .ticket-header span.title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            color: var(--pink-light);
-            text-transform: uppercase;
-        }
-
-        .ticket-header span.date-tag {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .ticket-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px 24px;
-        }
-
-        .ticket-item {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .ticket-label {
-            font-size: 0.75rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .ticket-val {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .ticket-note {
-            grid-column: span 2;
-            background: rgba(10, 10, 18, 0.6);
-            border-radius: 12px;
-            padding: 10px 14px;
-            margin-top: 6px;
-            font-style: italic;
-            font-size: 0.9rem;
-            color: var(--pink-light);
-            border-left: 3px solid var(--pink);
-        }
-
-        /* Toast Message Notification */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(26, 26, 40, 0.95);
-            border: 1px solid var(--pink);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Media Queries for Mobile Responsiveness */
-        @media (max-width: 580px) {
-            .card {
-                padding: 30px 20px;
-                border-radius: 22px;
-            }
-
-            .ticket-body {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .ticket-note {
-                grid-column: span 1;
-            }
-
-            .btn {
-                width: 100%;
-                padding: 14px 20px;
-            }
-
-            .btn-group {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .options-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Mrs. Subhani Sinha ❤️</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07070e;
+      --bg-gradient: radial-gradient(circle at 50% 20%, #1a1028 0%, #07070e 80%);
+      --card-bg: rgba(19, 19, 32, 0.78);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-inner: rgba(30, 30, 48, 0.65);
+      
+      --text: #f5f5fa;
+      --muted: #9c9cb0;
+      
+      --pink: #ff4f91;
+      --pink-light: #ff7aad;
+      --pink-glow: rgba(255, 79, 145, 0.4);
+      --purple: #9b6cff;
+      --gold: #ffd166;
+      --green: #62e6a7;
+      
+      --font-heading: 'Playfair Display', serif;
+      --font-body: 'Outfit', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      background-image: var(--bg-gradient);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Background Canvas */
+    #bg-canvas, #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+
+    #bg-canvas { z-index: 1; }
+    #confetti-canvas { z-index: 99; }
+
+    /* App Container */
+    .app-container {
+      position: relative;
+      z-index: 10;
+      width: 92%;
+      max-width: 760px;
+      margin: 20px auto;
+    }
+
+    /* Glassmorphism Card */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 40px 32px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), 0 0 40px rgba(255, 79, 145, 0.08);
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: none;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .card.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Typography */
+    h1, h2 {
+      font-family: var(--font-heading);
+      letter-spacing: -0.01em;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    p.subtitle {
+      color: var(--muted);
+      font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+      font-weight: 300;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255, 209, 102, 0.12);
+      border: 1px solid rgba(255, 209, 102, 0.3);
+      color: var(--gold);
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    /* Dedicated Name Display Badge */
+    .name-display-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 79, 145, 0.12);
+      border: 1px solid rgba(255, 79, 145, 0.35);
+      padding: 14px 28px;
+      border-radius: 50px;
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 15px 0 25px;
+      box-shadow: 0 0 25px rgba(255, 79, 145, 0.2);
+    }
+
+    /* Input Styling */
+    .input-group {
+      margin: 28px 0;
+    }
+
+    .input-field {
+      width: 100%;
+      max-width: 340px;
+      background: var(--card-inner);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 16px 20px;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 1.1rem;
+      text-align: center;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 20px var(--pink-glow);
+    }
+
+    textarea.input-field {
+      text-align: left;
+      resize: none;
+      height: 90px;
+      max-width: 500px;
+      font-size: 0.95rem;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .btn {
+      background: var(--pink);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 28px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 8px 20px var(--pink-glow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn:hover, .btn:active {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(255, 79, 145, 0.5);
+      background: var(--pink-light);
+    }
+
+    .btn-secondary {
+      background: var(--card-inner);
+      color: var(--text);
+      box-shadow: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover, .btn-secondary:active {
+      background: rgba(45, 45, 68, 0.8);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Proposal Screen Special Dodging Setup */
+    .proposal-box {
+      position: relative;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    #yes-btn {
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 2;
+    }
+
+    #no-btn {
+      position: absolute;
+      background: var(--card-inner);
+      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 14px 28px;
+      border-radius: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: top 0.25s ease, left 0.25s ease, transform 0.2s ease;
+      z-index: 10;
+    }
+
+    /* Calendar Styling */
+    .calendar-container {
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .calendar-nav {
+      background: var(--card-inner);
+      border: none;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .calendar-nav:hover { background: rgba(255, 255, 255, 0.2); }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .cal-day-name {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding-bottom: 8px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card-inner);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .cal-day:not(.empty):not(.past):hover {
+      border-color: var(--pink);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    .cal-day.selected {
+      background: var(--pink) !important;
+      color: #fff !important;
+      box-shadow: 0 0 15px var(--pink-glow);
+    }
+
+    .cal-day.past {
+      opacity: 0.3;
+      cursor: not-allowed;
+      background: rgba(15, 15, 24, 0.5);
+    }
+
+    .cal-day.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    /* Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: var(--card-inner);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--pink);
+      color: #fff;
+      border-color: var(--pink);
+    }
+
+    /* Options Grid (Time, Location, Outfit) */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .grid-btn {
+      background: var(--card-inner);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      padding: 14px 10px;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .grid-btn span.icon {
+      font-size: 1.4rem;
+    }
+
+    .grid-btn:hover, .grid-btn.selected {
+      background: var(--pink);
+      border-color: var(--pink);
+      color: #fff;
+      box-shadow: 0 0 20px var(--pink-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Confirmation Ticket Card */
+    .ticket-pass {
+      background: linear-gradient(135deg, rgba(28, 28, 44, 0.95) 0%, rgba(18, 18, 30, 0.95) 100%);
+      border: 1px solid rgba(155, 108, 255, 0.35);
+      border-radius: 20px;
+      padding: 24px;
+      margin: 20px auto;
+      max-width: 540px;
+      text-align: left;
+      position: relative;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px stroke rgba(255, 255, 255, 0.1);
+      margin-bottom: 16px;
+    }
+
+    .ticket-header span.title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--pink-light);
+      text-transform: uppercase;
+    }
+
+    .ticket-header span.date-tag {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .ticket-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+    }
+
+    .ticket-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .ticket-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .ticket-val {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .ticket-note {
+      grid-column: span 2;
+      background: rgba(10, 10, 18, 0.6);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-top: 6px;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--pink-light);
+      border-left: 3px solid var(--pink);
+    }
+
+    /* Toast Message Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(26, 26, 40, 0.95);
+      border: 1px solid var(--pink);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Media Queries for Mobile Responsiveness */
+    @media (max-width: 580px) {
+      .card {
+        padding: 30px 20px;
+        border-radius: 22px;
+      }
+      .ticket-body {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .ticket-note {
+        grid-column: span 1;
+      }
+      .btn {
+        width: 100%;
+        padding: 14px 20px;
+      }
+      .btn-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-    <!-- Ambient Particles Canvas -->
-    <canvas id="bg-canvas"></canvas>
-    <!-- Celebration Confetti Canvas -->
-    <canvas id="confetti-canvas"></canvas>
+  <!-- Ambient Particles Canvas -->
+  <canvas id="bg-canvas"></canvas>
+  <!-- Celebration Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
 
-    <!-- Toast Popup -->
-    <div id="toast" class="toast">Message</div>
+  <!-- Toast Popup -->
+  <div id="toast" class="toast">Message</div>
 
-    <div class="app-container">
+  <div class="app-container">
 
-        <!-- STEP 1: INTRO -->
-        <div id="step-intro" class="card active">
-            <div style="font-size: 2.2rem; color: var(--gold); margin-bottom: 12px;">✦</div>
-            <h1>I made something for you</h1>
-            <p class="subtitle">Nothing complicated. Just one little question.</p>
+    <!-- STEP 1: INTRO (ELEGANT NAME DISPLAY FOR MRS. SUBHANI SINHA) -->
+    <div id="step-intro" class="card active">
+      <div style="font-size: 2.2rem; color: var(--gold); margin-bottom: 12px;">✦</div>
+      <h1>I made something for you</h1>
+      <p class="subtitle">Nothing complicated. Just one little question.</p>
+      
+      <div class="name-display-pill">
+        <span>👑</span>
+        <span>Mrs. Subhani Sinha</span>
+      </div>
 
-            <div class="input-group">
-                <input type="text" id="name-input" class="input-field" value="Mrs. Subhani Sinha" placeholder="Mrs. Subhani Sinha"
-                    autocomplete="off">
-            </div>
-
-            <div class="btn-group">
-                <button class="btn" onclick="startProposal()">BEGIN →</button>
-            </div>
-        </div>
-
-        <!-- STEP 2: PROPOSAL (TREND DODGING) -->
-        <div id="step-proposal" class="card">
-            <div style="font-size: 2.5rem; color: var(--pink); margin-bottom: 10px;">♡</div>
-            <h1 id="proposal-greeting">Hey there</h1>
-            <p class="subtitle">Will you go on a date with me? ❤️</p>
-
-            <div class="proposal-box" id="proposal-box">
-                <button id="yes-btn" class="btn" onclick="goToStep('step-calendar')">YES ❤️</button>
-                <button id="no-btn" onclick="dodgeNo()" onmouseenter="dodgeNo()">NO</button>
-            </div>
-        </div>
-
-        <!-- STEP 3: CALENDAR -->
-        <div id="step-calendar" class="card">
-            <h1>Pick Our Day</h1>
-            <p class="subtitle">Choose a date that feels right.</p>
-
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <button class="calendar-nav" onclick="changeMonth(-1)">‹</button>
-                    <h2 id="calendar-month-year" style="font-size: 1.2rem; font-family: var(--font-body);"></h2>
-                    <button class="calendar-nav" onclick="changeMonth(1)">›</button>
-                </div>
-
-                <div class="calendar-grid" id="calendar-grid">
-                    <!-- Rendered dynamically -->
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="goToStep('step-proposal')">← Back</button>
-                <button class="btn" onclick="confirmDate()">Continue →</button>
-            </div>
-        </div>
-
-        <!-- STEP 4: TIME PICKER -->
-        <div id="step-time" class="card">
-            <h1>Choose a Time</h1>
-            <p class="subtitle" id="selected-date-display">Select a time slot</p>
-
-            <div class="filter-tabs">
-                <button class="tab-btn active" onclick="filterTime('All', this)">✨ All</button>
-                <button class="tab-btn" onclick="filterTime('Morning', this)">☀️ Morning</button>
-                <button class="tab-btn" onclick="filterTime('Afternoon', this)">🌤️ Afternoon</button>
-                <button class="tab-btn" onclick="filterTime('Evening', this)">🌙 Evening</button>
-            </div>
-
-            <div class="options-grid" id="time-grid">
-                <!-- Rendered dynamically -->
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="goToStep('step-calendar')">← Back</button>
-                <button class="btn" onclick="confirmTime()">Continue →</button>
-            </div>
-        </div>
-
-        <!-- STEP 5: LOCATION PICKER -->
-        <div id="step-location" class="card">
-            <h1>Where Should We Go?</h1>
-            <p class="subtitle">Choose the kind of place you'd enjoy.</p>
-
-            <div class="options-grid" id="location-grid">
-                <!-- Rendered dynamically -->
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="goToStep('step-time')">← Back</button>
-                <button class="btn" onclick="confirmLocation()">Continue →</button>
-            </div>
-        </div>
-
-        <!-- STEP 6: OUTFIT & MESSAGE -->
-        <div id="step-outfit" class="card">
-            <h1>What Are You Wearing?</h1>
-            <p class="subtitle">No wrong answers. Just be comfortable.</p>
-
-            <div class="options-grid" id="outfit-grid">
-                <!-- Rendered dynamically -->
-            </div>
-
-            <div class="input-group" style="margin-top: 24px;">
-                <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 8px;">Add a little message (optional)
-                </p>
-                <textarea id="personal-message" class="input-field" placeholder="Write something sweet..."></textarea>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="goToStep('step-location')">← Back</button>
-                <button class="btn" onclick="prepareReview()">Review →</button>
-            </div>
-        </div>
-
-        <!-- STEP 7: REVIEW SUMMARY -->
-        <div id="step-review" class="card">
-            <h1>One Little Plan</h1>
-            <p class="subtitle">Everything looks good?</p>
-
-            <div class="ticket-pass">
-                <div class="ticket-header">
-                    <span class="title">Reservation Pass</span>
-                    <span class="date-tag" id="review-date">Date</span>
-                </div>
-                <div class="ticket-body">
-                    <div class="ticket-item">
-                        <span class="ticket-label">For</span>
-                        <span class="ticket-val" id="review-name">Name</span>
-                    </div>
-                    <div class="ticket-item">
-                        <span class="ticket-label">Time</span>
-                        <span class="ticket-val" id="review-time">Time</span>
-                    </div>
-                    <div class="ticket-item">
-                        <span class="ticket-label">Venue</span>
-                        <span class="ticket-val" id="review-location">Location</span>
-                    </div>
-                    <div class="ticket-item">
-                        <span class="ticket-label">Style</span>
-                        <span class="ticket-val" id="review-outfit">Outfit</span>
-                    </div>
-                    <div class="ticket-note" id="review-note">
-                        "Looking forward to seeing you!"
-                    </div>
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="goToStep('step-outfit')">← Change</button>
-                <button class="btn" onclick="showCelebration()">CONFIRM ❤️</button>
-            </div>
-        </div>
-
-        <!-- STEP 8: CELEBRATION -->
-        <div id="step-celebration" class="card">
-            <div class="badge">✦ OFFICIAL INVITATION PASS ✦</div>
-            <h1 id="celebration-heading">It's a Date! ✨</h1>
-            <p class="subtitle">Your reservation pass is locked in. Here are the details:</p>
-
-            <div class="ticket-pass">
-                <div class="ticket-header">
-                    <span class="title">RESERVATION SUMMARY</span>
-                    <span class="date-tag" id="final-date">Date</span>
-                </div>
-                <div class="ticket-body">
-                    <div class="ticket-item">
-                        <span class="ticket-label">Time</span>
-                        <span class="ticket-val" id="final-time">Time</span>
-                    </div>
-                    <div class="ticket-item">
-                        <span class="ticket-label">Venue</span>
-                        <span class="ticket-val" id="final-location">Location</span>
-                    </div>
-                    <div class="ticket-item">
-                        <span class="ticket-label">Style</span>
-                        <span class="ticket-val" id="final-outfit">Outfit</span>
-                    </div>
-                    <div class="ticket-item">
-                        <span class="ticket-label">Guest</span>
-                        <span class="ticket-val" id="final-name">Name</span>
-                    </div>
-                    <div class="ticket-note" id="final-note">
-                        "Looking forward to an amazing time together!"
-                    </div>
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="copyPass()">📋 Copy Pass</button>
-                <button class="btn btn-secondary" onclick="shareWhatsApp()">📱 Share WhatsApp</button>
-                <button class="btn" onclick="triggerConfetti()">🎉 Celebrate!</button>
-                <button class="btn btn-secondary" onclick="resetApp()">Start Over</button>
-            </div>
-        </div>
-
+      <div class="btn-group">
+        <button class="btn" onclick="startProposal()">BEGIN  →</button>
+      </div>
     </div>
 
-    <script>
-        // ========================================================
-        // STATE MANAGEMENT
-        // ========================================================
-        const state = {
-            name: '',
-            selectedDate: null,
-            selectedTime: '',
-            selectedLocation: '',
-            selectedOutfit: '',
-            personalMessage: '',
-            currentMonth: new Date().getMonth(),
-            currentYear: new Date().getFullYear(),
-            noCount: 0,
-            yesSize: 1
+    <!-- STEP 2: PROPOSAL (TREND DODGING) -->
+    <div id="step-proposal" class="card">
+      <div style="font-size: 2.5rem; color: var(--pink); margin-bottom: 10px;">♡</div>
+      <h1 id="proposal-greeting">Hey, Mrs. Subhani Sinha.</h1>
+      <p class="subtitle">Will you go on a date with me? ❤️</p>
+      
+      <div class="proposal-box" id="proposal-box">
+        <button id="yes-btn" class="btn" onclick="goToStep('step-calendar')">YES ❤️</button>
+        <button id="no-btn" onclick="dodgeNo()" onmouseenter="dodgeNo()">NO</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: CALENDAR -->
+    <div id="step-calendar" class="card">
+      <h1>Pick Our Day</h1>
+      <p class="subtitle">Choose a date that feels right.</p>
+
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <button class="calendar-nav" onclick="changeMonth(-1)">‹</button>
+          <h2 id="calendar-month-year" style="font-size: 1.2rem; font-family: var(--font-body);"></h2>
+          <button class="calendar-nav" onclick="changeMonth(1)">›</button>
+        </div>
+        
+        <div class="calendar-grid" id="calendar-grid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep('step-proposal')">← Back</button>
+        <button class="btn" onclick="confirmDate()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: TIME PICKER -->
+    <div id="step-time" class="card">
+      <h1>Choose a Time</h1>
+      <p class="subtitle" id="selected-date-display">Select a time slot</p>
+
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="filterTime('All', this)">✨ All</button>
+        <button class="tab-btn" onclick="filterTime('Morning', this)">☀️ Morning</button>
+        <button class="tab-btn" onclick="filterTime('Afternoon', this)">🌤️ Afternoon</button>
+        <button class="tab-btn" onclick="filterTime('Evening', this)">🌙 Evening</button>
+      </div>
+
+      <div class="options-grid" id="time-grid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep('step-calendar')">← Back</button>
+        <button class="btn" onclick="confirmTime()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: LOCATION PICKER -->
+    <div id="step-location" class="card">
+      <h1>Where Should We Go?</h1>
+      <p class="subtitle">Choose the kind of place you'd enjoy.</p>
+
+      <div class="options-grid" id="location-grid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep('step-time')">← Back</button>
+        <button class="btn" onclick="confirmLocation()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 6: OUTFIT & MESSAGE -->
+    <div id="step-outfit" class="card">
+      <h1>What Are You Wearing?</h1>
+      <p class="subtitle">No wrong answers. Just be comfortable.</p>
+
+      <div class="options-grid" id="outfit-grid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="input-group" style="margin-top: 24px;">
+        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 8px;">Add a little message (optional)</p>
+        <textarea id="personal-message" class="input-field" placeholder="Write something sweet..."></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep('step-location')">← Back</button>
+        <button class="btn" onclick="prepareReview()">Review →</button>
+      </div>
+    </div>
+
+    <!-- STEP 7: REVIEW SUMMARY -->
+    <div id="step-review" class="card">
+      <h1>One Little Plan</h1>
+      <p class="subtitle">Everything looks good?</p>
+
+      <div class="ticket-pass">
+        <div class="ticket-header">
+          <span class="title">Reservation Pass</span>
+          <span class="date-tag" id="review-date">Date</span>
+        </div>
+        <div class="ticket-body">
+          <div class="ticket-item">
+            <span class="ticket-label">For</span>
+            <span class="ticket-val" id="review-name">Mrs. Subhani Sinha</span>
+          </div>
+          <div class="ticket-item">
+            <span class="ticket-label">Time</span>
+            <span class="ticket-val" id="review-time">Time</span>
+          </div>
+          <div class="ticket-item">
+            <span class="ticket-label">Venue</span>
+            <span class="ticket-val" id="review-location">Location</span>
+          </div>
+          <div class="ticket-item">
+            <span class="ticket-label">Style</span>
+            <span class="ticket-val" id="review-outfit">Outfit</span>
+          </div>
+          <div class="ticket-note" id="review-note">
+            "Looking forward to seeing you!"
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToStep('step-outfit')">← Change</button>
+        <button class="btn" onclick="showCelebration()">CONFIRM ❤️</button>
+      </div>
+    </div>
+
+    <!-- STEP 8: CELEBRATION -->
+    <div id="step-celebration" class="card">
+      <div class="badge">✦ OFFICIAL INVITATION PASS ✦</div>
+      <h1 id="celebration-heading">It's a Date, Mrs. Subhani Sinha! ✨</h1>
+      <p class="subtitle">Your reservation pass is locked in. Here are the details:</p>
+
+      <div class="ticket-pass">
+        <div class="ticket-header">
+          <span class="title">RESERVATION SUMMARY</span>
+          <span class="date-tag" id="final-date">Date</span>
+        </div>
+        <div class="ticket-body">
+          <div class="ticket-item">
+            <span class="ticket-label">Time</span>
+            <span class="ticket-val" id="final-time">Time</span>
+          </div>
+          <div class="ticket-item">
+            <span class="ticket-label">Venue</span>
+            <span class="ticket-val" id="final-location">Location</span>
+          </div>
+          <div class="ticket-item">
+            <span class="ticket-label">Style</span>
+            <span class="ticket-val" id="final-outfit">Outfit</span>
+          </div>
+          <div class="ticket-item">
+            <span class="ticket-label">Guest</span>
+            <span class="ticket-val" id="final-name">Mrs. Subhani Sinha</span>
+          </div>
+          <div class="ticket-note" id="final-note">
+            "Looking forward to an amazing time together!"
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="copyPass()">📋 Copy Pass</button>
+        <button class="btn btn-secondary" onclick="shareWhatsApp()">📱 Share WhatsApp</button>
+        <button class="btn" onclick="triggerConfetti()">🎉 Celebrate!</button>
+        <button class="btn btn-secondary" onclick="resetApp()">Start Over</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ========================================================
+    // STATE MANAGEMENT (ALWAYS MRS. SUBHANI SINHA)
+    // ========================================================
+    const state = {
+      name: 'Mrs. Subhani Sinha',
+      selectedDate: null,
+      selectedTime: '',
+      selectedLocation: '',
+      selectedOutfit: '',
+      personalMessage: '',
+      currentMonth: new Date().getMonth(),
+      currentYear: new Date().getFullYear(),
+      noCount: 0,
+      yesSize: 1
+    };
+
+    const timeSlots = {
+      Morning: ['10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM'],
+      Afternoon: ['12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM'],
+      Evening: ['5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM', '8:30 PM', '9:00 PM']
+    };
+
+    const locations = [
+      { icon: '☕', name: 'Café' },
+      { icon: '🍽️', name: 'Restaurant' },
+      { icon: '🎬', name: 'Movie Theatre' },
+      { icon: '🌳', name: 'Park Walk' },
+      { icon: '🎮', name: 'Gaming Zone' },
+      { icon: '📚', name: 'Bookstore' },
+      { icon: '🛍️', name: 'Shopping' },
+      { icon: '✨', name: 'Surprise Me' }
+    ];
+
+    const outfits = [
+      { icon: '👕', name: 'Casual' },
+      { icon: '👔', name: 'Smart Casual' },
+      { icon: '🕴️', name: 'Formal' },
+      { icon: '🥻', name: 'Traditional' },
+      { icon: '💕', name: 'Twinning' },
+      { icon: '✨', name: 'Comfy & Good' }
+    ];
+
+    // ========================================================
+    // NAVIGATION
+    // ========================================================
+    function goToStep(stepId) {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+      const nextCard = document.getElementById(stepId);
+      if (nextCard) nextCard.classList.add('active');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // ========================================================
+    // STEP 1: INTRO (NO INPUT NEEDED)
+    // ========================================================
+    function startProposal() {
+      state.name = 'Mrs. Subhani Sinha';
+      document.getElementById('proposal-greeting').innerText = `Hey, Mrs. Subhani Sinha.`;
+      goToStep('step-proposal');
+      resetNoButton();
+    }
+
+    // ========================================================
+    // STEP 2: PROPOSAL (TREND DODGING)
+    // ========================================================
+    function resetNoButton() {
+      state.noCount = 0;
+      state.yesSize = 1;
+      const yesBtn = document.getElementById('yes-btn');
+      const noBtn = document.getElementById('no-btn');
+      yesBtn.style.transform = `scale(1)`;
+      noBtn.innerText = 'NO';
+      noBtn.style.top = '50%';
+      noBtn.style.left = '70%';
+      noBtn.style.transform = 'translate(-50%, -50%)';
+    }
+
+    function dodgeNo() {
+      state.noCount++;
+      state.yesSize = Math.min(2.5, 1 + state.noCount * 0.25);
+      
+      const yesBtn = document.getElementById('yes-btn');
+      const noBtn = document.getElementById('no-btn');
+      const box = document.getElementById('proposal-box');
+      const boxRect = box.getBoundingClientRect();
+
+      yesBtn.style.transform = `scale(${state.yesSize})`;
+
+      // Random position inside container bounds
+      const padding = 40;
+      const x = Math.random() * (boxRect.width - padding * 2) + padding;
+      const y = Math.random() * (boxRect.height - padding * 2) + padding;
+
+      noBtn.style.top = `${y}px`;
+      noBtn.style.left = `${x}px`;
+
+      const noTexts = ['NO 😜', 'NO 🙈', 'NO 🏃‍♂️', 'NO 💥', 'NO 👀', 'NO 🔒'];
+      const messages = [
+        "Nice try! 👀",
+        "Think about it... ❤️",
+        "Wrong button! 👉",
+        "YES is right over there! 🥰",
+        "You can't click NO! 😜",
+        "YES is getting bigger! 🚀",
+        "Just say YES already! ❤️"
+      ];
+
+      noBtn.innerText = noTexts[state.noCount % noTexts.length];
+      showToast(messages[state.noCount % messages.length]);
+    }
+
+    // ========================================================
+    // STEP 3: CALENDAR
+    // ========================================================
+    function renderCalendar() {
+      const grid = document.getElementById('calendar-grid');
+      grid.innerHTML = '';
+      
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      document.getElementById('calendar-month-year').innerText = `${monthNames[state.currentMonth]} ${state.currentYear}`;
+
+      const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      dayNames.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'cal-day-name';
+        el.innerText = d;
+        grid.appendChild(el);
+      });
+
+      const firstDay = new Date(state.currentYear, state.currentMonth, 1).getDay();
+      let paddingDays = (firstDay === 0 ? 6 : firstDay - 1);
+      
+      for (let i = 0; i < paddingDays; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'cal-day empty';
+        grid.appendChild(empty);
+      }
+
+      const daysInMonth = new Date(state.currentYear, state.currentMonth + 1, 0).getDate();
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'cal-day';
+        dayEl.innerText = day;
+
+        const thisDate = new Date(state.currentYear, state.currentMonth, day);
+
+        if (thisDate < today) {
+          dayEl.classList.add('past');
+        } else {
+          if (state.selectedDate && 
+              state.selectedDate.getDate() === day &&
+              state.selectedDate.getMonth() === state.currentMonth &&
+              state.selectedDate.getFullYear() === state.currentYear) {
+            dayEl.classList.add('selected');
+          }
+
+          dayEl.onclick = () => {
+            state.selectedDate = thisDate;
+            renderCalendar();
+          };
+        }
+        grid.appendChild(dayEl);
+      }
+    }
+
+    function changeMonth(dir) {
+      const today = new Date();
+      if (dir === -1 && state.currentYear === today.getFullYear() && state.currentMonth === today.getMonth()) return;
+      
+      state.currentMonth += dir;
+      if (state.currentMonth < 0) {
+        state.currentMonth = 11;
+        state.currentYear--;
+      } else if (state.currentMonth > 11) {
+        state.currentMonth = 0;
+        state.currentYear++;
+      }
+      renderCalendar();
+    }
+
+    function confirmDate() {
+      if (!state.selectedDate) {
+        showToast('Please select a date first!');
+        return;
+      }
+      renderTimePicker('All');
+      goToStep('step-time');
+    }
+
+    // ========================================================
+    // STEP 4: TIME PICKER
+    // ========================================================
+    function renderTimePicker(category = 'All') {
+      const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
+      document.getElementById('selected-date-display').innerText = dateStr;
+
+      const grid = document.getElementById('time-grid');
+      grid.innerHTML = '';
+
+      let times = [];
+      if (category === 'All') {
+        Object.values(timeSlots).forEach(arr => times.push(...arr));
+      } else {
+        times = timeSlots[category] || [];
+      }
+
+      times.forEach(t => {
+        const btn = document.createElement('button');
+        btn.className = `grid-btn ${state.selectedTime === t ? 'selected' : ''}`;
+        btn.innerText = t;
+        btn.onclick = () => {
+          state.selectedTime = t;
+          renderTimePicker(category);
         };
+        grid.appendChild(btn);
+      });
+    }
 
-        const timeSlots = {
-            Morning: ['10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM'],
-            Afternoon: ['12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM'],
-            Evening: ['5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM', '8:30 PM', '9:00 PM']
+    function filterTime(cat, el) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      renderTimePicker(cat);
+    }
+
+    function confirmTime() {
+      if (!state.selectedTime) state.selectedTime = '5:00 PM';
+      renderLocationPicker();
+      goToStep('step-location');
+    }
+
+    // ========================================================
+    // STEP 5: LOCATION PICKER
+    // ========================================================
+    function renderLocationPicker() {
+      const grid = document.getElementById('location-grid');
+      grid.innerHTML = '';
+
+      locations.forEach(loc => {
+        const btn = document.createElement('button');
+        btn.className = `grid-btn ${state.selectedLocation === loc.name ? 'selected' : ''}`;
+        btn.innerHTML = `<span class="icon">${loc.icon}</span><span>${loc.name}</span>`;
+        btn.onclick = () => {
+          state.selectedLocation = loc.name;
+          renderLocationPicker();
         };
+        grid.appendChild(btn);
+      });
+    }
 
-        const locations = [
-            { icon: '☕', name: 'Café' },
-            { icon: '🍽️', name: 'Restaurant' },
-            { icon: '🎬', name: 'Movie Theatre' },
-            { icon: '🌳', name: 'Park Walk' },
-            { icon: '🎮', name: 'Gaming Zone' },
-            { icon: '📚', name: 'Bookstore' },
-            { icon: '🛍️', name: 'Shopping' },
-            { icon: '✨', name: 'Surprise Me' }
-        ];
+    function confirmLocation() {
+      if (!state.selectedLocation) state.selectedLocation = 'Surprise Me';
+      renderOutfitPicker();
+      goToStep('step-outfit');
+    }
 
-        const outfits = [
-            { icon: '👕', name: 'Casual' },
-            { icon: '👔', name: 'Smart Casual' },
-            { icon: '🕴️', name: 'Formal' },
-            { icon: '🥻', name: 'Traditional' },
-            { icon: '💕', name: 'Twinning' },
-            { icon: '✨', name: 'Comfy & Good' }
-        ];
+    // ========================================================
+    // STEP 6: OUTFIT PICKER
+    // ========================================================
+    function renderOutfitPicker() {
+      const grid = document.getElementById('outfit-grid');
+      grid.innerHTML = '';
 
-        // ========================================================
-        // NAVIGATION
-        // ========================================================
-        function goToStep(stepId) {
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-            const nextCard = document.getElementById(stepId);
-            if (nextCard) nextCard.classList.add('active');
-        }
+      outfits.forEach(out => {
+        const btn = document.createElement('button');
+        btn.className = `grid-btn ${state.selectedOutfit === out.name ? 'selected' : ''}`;
+        btn.innerHTML = `<span class="icon">${out.icon}</span><span>${out.name}</span>`;
+        btn.onclick = () => {
+          state.selectedOutfit = out.name;
+          renderOutfitPicker();
+        };
+        grid.appendChild(btn);
+      });
+    }
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
+    function prepareReview() {
+      if (!state.selectedOutfit) state.selectedOutfit = 'Comfy & Good';
+      state.personalMessage = document.getElementById('personal-message').value.trim();
 
-        // ========================================================
-        // STEP 1: INTRO
-        // ========================================================
-        function startProposal() {
-            const input = document.getElementById('name-input').value.trim();
-            state.name = input || 'Mrs. Subhani Sinha';
-            document.getElementById('proposal-greeting').innerText = `Hey, ${state.name}.`;
-            goToStep('step-proposal');
-            resetNoButton();
-        }
+      const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
 
-        document.getElementById('name-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') startProposal();
+      document.getElementById('review-name').innerText = 'Mrs. Subhani Sinha';
+      document.getElementById('review-date').innerText = dateStr;
+      document.getElementById('review-time').innerText = state.selectedTime;
+      document.getElementById('review-location').innerText = state.selectedLocation;
+      document.getElementById('review-outfit').innerText = state.selectedOutfit;
+      
+      const noteEl = document.getElementById('review-note');
+      noteEl.innerText = state.personalMessage ? `"${state.personalMessage}"` : '"Looking forward to seeing you!"';
+
+      goToStep('step-review');
+    }
+
+    // ========================================================
+    // STEP 7 & 8: CELEBRATION & SHARE
+    // ========================================================
+    function showCelebration() {
+      const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
+
+      document.getElementById('celebration-heading').innerText = `It's a Date, Mrs. Subhani Sinha! ✨`;
+      document.getElementById('final-name').innerText = 'Mrs. Subhani Sinha';
+      document.getElementById('final-date').innerText = dateStr;
+      document.getElementById('final-time').innerText = state.selectedTime;
+      document.getElementById('final-location').innerText = state.selectedLocation;
+      document.getElementById('final-outfit').innerText = state.selectedOutfit;
+
+      const noteEl = document.getElementById('final-note');
+      noteEl.innerText = state.personalMessage ? `"${state.personalMessage}"` : '"Looking forward to an amazing time together! ❤️"';
+
+      goToStep('step-celebration');
+      triggerConfetti();
+    }
+
+    function getSummaryText() {
+      const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : 'TBD';
+      let text = `✨ DATE INVITATION PASS ✨\n`;
+      text += `----------------------------\n`;
+      text += `For: Mrs. Subhani Sinha\n`;
+      text += `📅 Date: ${dateStr}\n`;
+      text += `⏰ Time: ${state.selectedTime}\n`;
+      text += `📍 Venue: ${state.selectedLocation}\n`;
+      text += `👔 Style: ${state.selectedOutfit}\n`;
+      if (state.personalMessage) text += `💬 Note: "${state.personalMessage}"\n`;
+      text += `----------------------------\n`;
+      text += `Can't wait! ❤️`;
+      return text;
+    }
+
+    function copyPass() {
+      const text = getSummaryText();
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Pass copied to clipboard! 📋');
+      }).catch(() => {
+        showToast('Pass ready! ❤️');
+      });
+    }
+
+    function shareWhatsApp() {
+      const text = encodeURIComponent(getSummaryText());
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+
+    function resetApp() {
+      state.name = 'Mrs. Subhani Sinha';
+      state.selectedDate = null;
+      state.selectedTime = '';
+      state.selectedLocation = '';
+      state.selectedOutfit = '';
+      state.personalMessage = '';
+      document.getElementById('personal-message').value = '';
+      renderCalendar();
+      goToStep('step-intro');
+    }
+
+    // ========================================================
+    // ANIMATION & CANVASES
+    // ========================================================
+    // Background Particles
+    const bgCanvas = document.getElementById('bg-canvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    let bgParticles = [];
+
+    function resizeCanvases() {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvases);
+
+    function initBgParticles() {
+      bgParticles = [];
+      const symbols = ['♥', '♡', '✦', '•'];
+      for (let i = 0; i < 35; i++) {
+        bgParticles.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          size: Math.random() * 14 + 10,
+          speed: Math.random() * 0.6 + 0.2,
+          symbol: symbols[Math.floor(Math.random() * symbols.length)],
+          color: `rgba(255, 79, 145, ${Math.random() * 0.15 + 0.05})`
+        });
+      }
+    }
+
+    function animateBgParticles() {
+      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      bgParticles.forEach(p => {
+        p.y -= p.speed;
+        if (p.y < -20) p.y = window.innerHeight + 20;
+        bgCtx.font = `${p.size}px sans-serif`;
+        bgCtx.fillStyle = p.color;
+        bgCtx.fillText(p.symbol, p.x, p.y);
+      });
+      requestAnimationFrame(animateBgParticles);
+    }
+
+    // Confetti Animation
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let confettiList = [];
+    let confettiActive = false;
+
+    function triggerConfetti() {
+      confettiList = [];
+      const colors = ['#ff4f91', '#ff7aad', '#9b6cff', '#ffd166', '#62e6a7'];
+      const shapes = ['★', '✦', '♥', '•'];
+
+      for (let i = 0; i < 90; i++) {
+        confettiList.push({
+          x: Math.random() * confettiCanvas.width,
+          y: Math.random() * -200 - 10,
+          size: Math.random() * 12 + 10,
+          speedY: Math.random() * 3 + 2,
+          speedX: Math.random() * 2 - 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          shape: shapes[Math.floor(Math.random() * shapes.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: Math.random() * 4 - 2
+        });
+      }
+
+      confettiActive = true;
+      let frame = 0;
+
+      function loop() {
+        if (!confettiActive) return;
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        
+        confettiList.forEach(p => {
+          p.y += p.speedY;
+          p.x += Math.sin(p.y * 0.02) * 1.5;
+          p.rotation += p.rotSpeed;
+
+          confettiCtx.save();
+          confettiCtx.translate(p.x, p.y);
+          confettiCtx.rotate((p.rotation * Math.PI) / 180);
+          confettiCtx.font = `${p.size}px sans-serif`;
+          confettiCtx.fillStyle = p.color;
+          confettiCtx.fillText(p.shape, 0, 0);
+          confettiCtx.restore();
         });
 
-        // ========================================================
-        // STEP 2: PROPOSAL (TREND DODGING)
-        // ========================================================
-        function resetNoButton() {
-            state.noCount = 0;
-            state.yesSize = 1;
-            const yesBtn = document.getElementById('yes-btn');
-            const noBtn = document.getElementById('no-btn');
-            yesBtn.style.transform = `scale(1)`;
-            noBtn.innerText = 'NO';
-            noBtn.style.top = '50%';
-            noBtn.style.left = '70%';
-            noBtn.style.transform = 'translate(-50%, -50%)';
+        frame++;
+        if (frame < 200) {
+          requestAnimationFrame(loop);
+        } else {
+          confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+          confettiActive = false;
         }
+      }
+      loop();
+    }
 
-        function dodgeNo() {
-            state.noCount++;
-            state.yesSize = Math.min(2.5, 1 + state.noCount * 0.25);
-
-            const yesBtn = document.getElementById('yes-btn');
-            const noBtn = document.getElementById('no-btn');
-            const box = document.getElementById('proposal-box');
-            const boxRect = box.getBoundingClientRect();
-
-            yesBtn.style.transform = `scale(${state.yesSize})`;
-
-            // Random position inside container bounds
-            const padding = 40;
-            const x = Math.random() * (boxRect.width - padding * 2) + padding;
-            const y = Math.random() * (boxRect.height - padding * 2) + padding;
-
-            noBtn.style.top = `${y}px`;
-            noBtn.style.left = `${x}px`;
-
-            const noTexts = ['NO 😜', 'NO 🙈', 'NO 🏃‍♂️', 'NO 💥', 'NO 👀', 'NO 🔒'];
-            const messages = [
-                "Nice try! 👀",
-                "Think about it... ❤️",
-                "Wrong button! 👉",
-                "YES is right over there! 🥰",
-                "You can't click NO! 😜",
-                "YES is getting bigger! 🚀",
-                "Just say YES already! ❤️"
-            ];
-
-            noBtn.innerText = noTexts[state.noCount % noTexts.length];
-            showToast(messages[state.noCount % messages.length]);
-        }
-
-        // ========================================================
-        // STEP 3: CALENDAR
-        // ========================================================
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-grid');
-            grid.innerHTML = '';
-
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('calendar-month-year').innerText = `${monthNames[state.currentMonth]} ${state.currentYear}`;
-
-            const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            dayNames.forEach(d => {
-                const el = document.createElement('div');
-                el.className = 'cal-day-name';
-                el.innerText = d;
-                grid.appendChild(el);
-            });
-
-            const firstDay = new Date(state.currentYear, state.currentMonth, 1).getDay();
-            let paddingDays = (firstDay === 0 ? 6 : firstDay - 1);
-
-            for (let i = 0; i < paddingDays; i++) {
-                const empty = document.createElement('div');
-                empty.className = 'cal-day empty';
-                grid.appendChild(empty);
-            }
-
-            const daysInMonth = new Date(state.currentYear, state.currentMonth + 1, 0).getDate();
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'cal-day';
-                dayEl.innerText = day;
-
-                const thisDate = new Date(state.currentYear, state.currentMonth, day);
-
-                if (thisDate < today) {
-                    dayEl.classList.add('past');
-                } else {
-                    if (state.selectedDate &&
-                        state.selectedDate.getDate() === day &&
-                        state.selectedDate.getMonth() === state.currentMonth &&
-                        state.selectedDate.getFullYear() === state.currentYear) {
-                        dayEl.classList.add('selected');
-                    }
-
-                    dayEl.onclick = () => {
-                        state.selectedDate = thisDate;
-                        renderCalendar();
-                    };
-                }
-                grid.appendChild(dayEl);
-            }
-        }
-
-        function changeMonth(dir) {
-            const today = new Date();
-            if (dir === -1 && state.currentYear === today.getFullYear() && state.currentMonth === today.getMonth()) return;
-
-            state.currentMonth += dir;
-            if (state.currentMonth < 0) {
-                state.currentMonth = 11;
-                state.currentYear--;
-            } else if (state.currentMonth > 11) {
-                state.currentMonth = 0;
-                state.currentYear++;
-            }
-            renderCalendar();
-        }
-
-        function confirmDate() {
-            if (!state.selectedDate) {
-                showToast('Please select a date first!');
-                return;
-            }
-            renderTimePicker('All');
-            goToStep('step-time');
-        }
-
-        // ========================================================
-        // STEP 4: TIME PICKER
-        // ========================================================
-        function renderTimePicker(category = 'All') {
-            const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
-            document.getElementById('selected-date-display').innerText = dateStr;
-
-            const grid = document.getElementById('time-grid');
-            grid.innerHTML = '';
-
-            let times = [];
-            if (category === 'All') {
-                Object.values(timeSlots).forEach(arr => times.push(...arr));
-            } else {
-                times = timeSlots[category] || [];
-            }
-
-            times.forEach(t => {
-                const btn = document.createElement('button');
-                btn.className = `grid-btn ${state.selectedTime === t ? 'selected' : ''}`;
-                btn.innerText = t;
-                btn.onclick = () => {
-                    state.selectedTime = t;
-                    renderTimePicker(category);
-                };
-                grid.appendChild(btn);
-            });
-        }
-
-        function filterTime(cat, el) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            renderTimePicker(cat);
-        }
-
-        function confirmTime() {
-            if (!state.selectedTime) state.selectedTime = '5:00 PM';
-            renderLocationPicker();
-            goToStep('step-location');
-        }
-
-        // ========================================================
-        // STEP 5: LOCATION PICKER
-        // ========================================================
-        function renderLocationPicker() {
-            const grid = document.getElementById('location-grid');
-            grid.innerHTML = '';
-
-            locations.forEach(loc => {
-                const btn = document.createElement('button');
-                btn.className = `grid-btn ${state.selectedLocation === loc.name ? 'selected' : ''}`;
-                btn.innerHTML = `<span class="icon">${loc.icon}</span><span>${loc.name}</span>`;
-                btn.onclick = () => {
-                    state.selectedLocation = loc.name;
-                    renderLocationPicker();
-                };
-                grid.appendChild(btn);
-            });
-        }
-
-        function confirmLocation() {
-            if (!state.selectedLocation) state.selectedLocation = 'Surprise Me';
-            renderOutfitPicker();
-            goToStep('step-outfit');
-        }
-
-        // ========================================================
-        // STEP 6: OUTFIT PICKER
-        // ========================================================
-        function renderOutfitPicker() {
-            const grid = document.getElementById('outfit-grid');
-            grid.innerHTML = '';
-
-            outfits.forEach(out => {
-                const btn = document.createElement('button');
-                btn.className = `grid-btn ${state.selectedOutfit === out.name ? 'selected' : ''}`;
-                btn.innerHTML = `<span class="icon">${out.icon}</span><span>${out.name}</span>`;
-                btn.onclick = () => {
-                    state.selectedOutfit = out.name;
-                    renderOutfitPicker();
-                };
-                grid.appendChild(btn);
-            });
-        }
-
-        function prepareReview() {
-            if (!state.selectedOutfit) state.selectedOutfit = 'Comfy & Good';
-            state.personalMessage = document.getElementById('personal-message').value.trim();
-
-            const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
-
-            document.getElementById('review-name').innerText = state.name;
-            document.getElementById('review-date').innerText = dateStr;
-            document.getElementById('review-time').innerText = state.selectedTime;
-            document.getElementById('review-location').innerText = state.selectedLocation;
-            document.getElementById('review-outfit').innerText = state.selectedOutfit;
-
-            const noteEl = document.getElementById('review-note');
-            noteEl.innerText = state.personalMessage ? `"${state.personalMessage}"` : '"Looking forward to seeing you!"';
-
-            goToStep('step-review');
-        }
-
-        // ========================================================
-        // STEP 7 & 8: CELEBRATION & SHARE
-        // ========================================================
-        function showCelebration() {
-            const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
-
-            document.getElementById('celebration-heading').innerText = `It's a Date, ${state.name}! ✨`;
-            document.getElementById('final-name').innerText = state.name;
-            document.getElementById('final-date').innerText = dateStr;
-            document.getElementById('final-time').innerText = state.selectedTime;
-            document.getElementById('final-location').innerText = state.selectedLocation;
-            document.getElementById('final-outfit').innerText = state.selectedOutfit;
-
-            const noteEl = document.getElementById('final-note');
-            noteEl.innerText = state.personalMessage ? `"${state.personalMessage}"` : '"Looking forward to an amazing time together! ❤️"';
-
-            goToStep('step-celebration');
-            triggerConfetti();
-        }
-
-        function getSummaryText() {
-            const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : 'TBD';
-            let text = `✨ DATE INVITATION PASS ✨\n`;
-            text += `----------------------------\n`;
-            text += `For: ${state.name}\n`;
-            text += `📅 Date: ${dateStr}\n`;
-            text += `⏰ Time: ${state.selectedTime}\n`;
-            text += `📍 Venue: ${state.selectedLocation}\n`;
-            text += `👔 Style: ${state.selectedOutfit}\n`;
-            if (state.personalMessage) text += `💬 Note: "${state.personalMessage}"\n`;
-            text += `----------------------------\n`;
-            text += `Can't wait! ❤️`;
-            return text;
-        }
-
-        function copyPass() {
-            const text = getSummaryText();
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Pass copied to clipboard! 📋');
-            }).catch(() => {
-                showToast('Pass ready! ❤️');
-            });
-        }
-
-        function shareWhatsApp() {
-            const text = encodeURIComponent(getSummaryText());
-            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
-        }
-
-        function resetApp() {
-            state.name = '';
-            state.selectedDate = null;
-            state.selectedTime = '';
-            state.selectedLocation = '';
-            state.selectedOutfit = '';
-            state.personalMessage = '';
-            document.getElementById('name-input').value = '';
-            document.getElementById('personal-message').value = '';
-            renderCalendar();
-            goToStep('step-intro');
-        }
-
-        // ========================================================
-        // ANIMATION & CANVASES
-        // ========================================================
-        // Background Particles
-        const bgCanvas = document.getElementById('bg-canvas');
-        const bgCtx = bgCanvas.getContext('2d');
-        let bgParticles = [];
-
-        function resizeCanvases() {
-            bgCanvas.width = window.innerWidth;
-            bgCanvas.height = window.innerHeight;
-            confettiCanvas.width = window.innerWidth;
-            confettiCanvas.height = window.innerHeight;
-        }
-
-        window.addEventListener('resize', resizeCanvases);
-
-        function initBgParticles() {
-            bgParticles = [];
-            const symbols = ['♥', '♡', '✦', '•'];
-            for (let i = 0; i < 35; i++) {
-                bgParticles.push({
-                    x: Math.random() * window.innerWidth,
-                    y: Math.random() * window.innerHeight,
-                    size: Math.random() * 14 + 10,
-                    speed: Math.random() * 0.6 + 0.2,
-                    symbol: symbols[Math.floor(Math.random() * symbols.length)],
-                    color: `rgba(255, 79, 145, ${Math.random() * 0.15 + 0.05})`
-                });
-            }
-        }
-
-        function animateBgParticles() {
-            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            bgParticles.forEach(p => {
-                p.y -= p.speed;
-                if (p.y < -20) p.y = window.innerHeight + 20;
-                bgCtx.font = `${p.size}px sans-serif`;
-                bgCtx.fillStyle = p.color;
-                bgCtx.fillText(p.symbol, p.x, p.y);
-            });
-            requestAnimationFrame(animateBgParticles);
-        }
-
-        // Confetti Animation
-        const confettiCanvas = document.getElementById('confetti-canvas');
-        const confettiCtx = confettiCanvas.getContext('2d');
-        let confettiList = [];
-        let confettiActive = false;
-
-        function triggerConfetti() {
-            confettiList = [];
-            const colors = ['#ff4f91', '#ff7aad', '#9b6cff', '#ffd166', '#62e6a7'];
-            const shapes = ['★', '✦', '♥', '•'];
-
-            for (let i = 0; i < 90; i++) {
-                confettiList.push({
-                    x: Math.random() * confettiCanvas.width,
-                    y: Math.random() * -200 - 10,
-                    size: Math.random() * 12 + 10,
-                    speedY: Math.random() * 3 + 2,
-                    speedX: Math.random() * 2 - 1,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    shape: shapes[Math.floor(Math.random() * shapes.length)],
-                    rotation: Math.random() * 360,
-                    rotSpeed: Math.random() * 4 - 2
-                });
-            }
-
-            confettiActive = true;
-            let frame = 0;
-
-            function loop() {
-                if (!confettiActive) return;
-                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-
-                confettiList.forEach(p => {
-                    p.y += p.speedY;
-                    p.x += Math.sin(p.y * 0.02) * 1.5;
-                    p.rotation += p.rotSpeed;
-
-                    confettiCtx.save();
-                    confettiCtx.translate(p.x, p.y);
-                    confettiCtx.rotate((p.rotation * Math.PI) / 180);
-                    confettiCtx.font = `${p.size}px sans-serif`;
-                    confettiCtx.fillStyle = p.color;
-                    confettiCtx.fillText(p.shape, 0, 0);
-                    confettiCtx.restore();
-                });
-
-                frame++;
-                if (frame < 200) {
-                    requestAnimationFrame(loop);
-                } else {
-                    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-                    confettiActive = false;
-                }
-            }
-            loop();
-        }
-
-        // Initialize
-        window.onload = () => {
-            resizeCanvases();
-            initBgParticles();
-            animateBgParticles();
-            renderCalendar();
-        };
-    </script>
+    // Initialize
+    window.onload = () => {
+      resizeCanvases();
+      initBgParticles();
+      animateBgParticles();
+      renderCalendar();
+    };
+  </script>
 </body>
-
 </html>
