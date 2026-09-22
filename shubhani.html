@@ -4,6 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>For Mrs. Subhani Sinha ❤️</title>
+
+  <!-- Open Graph / WhatsApp Sharing Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mohit-lala.vercel.app/">
+  <meta property="og:title" content="Date Invitation for Mrs. Subhani Sinha ❤️">
+  <meta property="og:description" content="Official VIP Date Invitation Pass & Reservation Details ✨">
+  <meta property="og:image" content="https://mohit-lala.vercel.app/profile.png">
+  <meta property="og:image:secure_url" content="https://mohit-lala.vercel.app/profile.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="600">
+  <meta property="og:image:height" content="1066">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Date Invitation for Mrs. Subhani Sinha ❤️">
+  <meta name="twitter:description" content="Official VIP Date Invitation Pass & Reservation Details ✨">
+  <meta name="twitter:image" content="https://mohit-lala.vercel.app/profile.png">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -399,17 +416,137 @@
       transform: translateY(-2px);
     }
 
-    /* Confirmation Ticket Card */
+    /* Confirmation Ticket Card - Luxury Premium Styling */
     .ticket-pass {
-      background: linear-gradient(135deg, rgba(28, 28, 44, 0.95) 0%, rgba(18, 18, 30, 0.95) 100%);
-      border: 1px solid rgba(155, 108, 255, 0.35);
-      border-radius: 20px;
-      padding: 24px;
-      margin: 20px auto;
+      background: linear-gradient(135deg, rgba(32, 24, 52, 0.92) 0%, rgba(16, 16, 30, 0.96) 50%, rgba(28, 18, 44, 0.92) 100%);
+      border: 1px solid rgba(255, 79, 145, 0.35);
+      border-radius: 24px;
+      padding: 26px;
+      margin: 24px auto;
       max-width: 540px;
       text-align: left;
       position: relative;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .ticket-pass::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 79, 145, 0.09) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .ticket-pass::after {
+      content: '✦ SEALED WITH LOVE ✦';
+      position: absolute;
+      bottom: 10px;
+      right: 18px;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.22);
+      font-weight: 800;
+    }
+
+    .ticket-pass:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.65), 0 0 25px rgba(255, 79, 145, 0.3);
+      border-color: rgba(255, 79, 145, 0.6);
+    }
+
+    /* Host Avatar Section in Ticket Card */
+    .ticket-host-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+      position: relative;
+      z-index: 2;
+    }
+
+    .ticket-avatar-wrapper {
+      position: relative;
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--pink), var(--purple), var(--gold));
+      box-shadow: 0 0 20px rgba(255, 79, 145, 0.5), 0 0 10px rgba(255, 209, 102, 0.3);
+      flex-shrink: 0;
+      animation: pulseAura 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseAura {
+      0%, 100% { box-shadow: 0 0 18px rgba(255, 79, 145, 0.5); }
+      50% { box-shadow: 0 0 28px rgba(255, 79, 145, 0.8), 0 0 15px rgba(255, 209, 102, 0.6); }
+    }
+
+    .ticket-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #0e0e18;
+      display: block;
+    }
+
+    .avatar-status-dot {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 15px;
+      height: 15px;
+      background: var(--green);
+      border: 2px solid #0e0e18;
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--green);
+    }
+
+    .ticket-host-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .ticket-host-info .host-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .ticket-host-info .host-name {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.1;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .vibes-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      background: rgba(255, 209, 102, 0.12);
+      color: var(--gold);
+      border: 1px solid rgba(255, 209, 102, 0.35);
+      padding: 3px 10px;
+      border-radius: 20px;
+      width: fit-content;
+      margin-top: 2px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
     }
 
     .ticket-header {
@@ -417,59 +554,78 @@
       justify-content: space-between;
       align-items: center;
       padding-bottom: 14px;
-      border-bottom: 1px stroke rgba(255, 255, 255, 0.1);
-      margin-bottom: 16px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+      margin-bottom: 18px;
     }
 
     .ticket-header span.title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
       color: var(--pink-light);
       text-transform: uppercase;
     }
 
     .ticket-header span.date-tag {
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       color: #fff;
+      background: linear-gradient(45deg, var(--pink), var(--purple));
+      padding: 4px 12px;
+      border-radius: 20px;
+      box-shadow: 0 0 12px var(--pink-glow);
     }
 
     .ticket-body {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px 24px;
+      gap: 14px 20px;
+      position: relative;
+      z-index: 2;
     }
 
     .ticket-item {
       display: flex;
       flex-direction: column;
       gap: 3px;
+      background: rgba(255, 255, 255, 0.035);
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .ticket-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 79, 145, 0.3);
     }
 
     .ticket-label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
+      font-weight: 600;
     }
 
     .ticket-val {
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       color: #fff;
     }
 
     .ticket-note {
       grid-column: span 2;
-      background: rgba(10, 10, 18, 0.6);
-      border-radius: 12px;
-      padding: 10px 14px;
+      background: rgba(10, 10, 18, 0.75);
+      border-radius: 14px;
+      padding: 12px 16px;
       margin-top: 6px;
       font-style: italic;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: var(--pink-light);
       border-left: 3px solid var(--pink);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
     }
 
     /* Toast Message Notification */
@@ -648,6 +804,18 @@
       <p class="subtitle">Everything looks good?</p>
 
       <div class="ticket-pass">
+        <div class="ticket-host-section">
+          <div class="ticket-avatar-wrapper">
+            <img src="./profile.png" alt="Host Photo" class="ticket-avatar-img">
+            <span class="avatar-status-dot"></span>
+          </div>
+          <div class="ticket-host-info">
+            <span class="host-title">INVITATION HOST</span>
+            <h3 class="host-name">Mohit ✨</h3>
+            <span class="vibes-badge">😎 VIBES ONLY</span>
+          </div>
+        </div>
+
         <div class="ticket-header">
           <span class="title">Reservation Pass</span>
           <span class="date-tag" id="review-date">Date</span>
@@ -688,6 +856,18 @@
       <p class="subtitle">Your reservation pass is locked in. Here are the details:</p>
 
       <div class="ticket-pass">
+        <div class="ticket-host-section">
+          <div class="ticket-avatar-wrapper">
+            <img src="./profile.png" alt="Host Photo" class="ticket-avatar-img">
+            <span class="avatar-status-dot"></span>
+          </div>
+          <div class="ticket-host-info">
+            <span class="host-title">INVITATION HOST</span>
+            <h3 class="host-name">Mohit ✨</h3>
+            <span class="vibes-badge">😎 VIBES ONLY</span>
+          </div>
+        </div>
+
         <div class="ticket-header">
           <span class="title">RESERVATION SUMMARY</span>
           <span class="date-tag" id="final-date">Date</span>
@@ -1049,16 +1229,19 @@
 
     function getSummaryText() {
       const dateStr = state.selectedDate ? state.selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : 'TBD';
-      let text = `✨ DATE INVITATION PASS ✨\n`;
-      text += `----------------------------\n`;
-      text += `For: Mrs. Subhani Sinha\n`;
-      text += `📅 Date: ${dateStr}\n`;
-      text += `⏰ Time: ${state.selectedTime}\n`;
-      text += `📍 Venue: ${state.selectedLocation}\n`;
-      text += `👔 Style: ${state.selectedOutfit}\n`;
-      if (state.personalMessage) text += `💬 Note: "${state.personalMessage}"\n`;
-      text += `----------------------------\n`;
-      text += `Can't wait! ❤️`;
+      const photoUrl = "https://mohit-lala.vercel.app/profile.png";
+      
+      let text = `👑 *OFFICIAL DATE INVITATION PASS* 👑\n`;
+      text += `============================\n`;
+      text += `👤 *Guest:* Mrs. Subhani Sinha\n`;
+      text += `📅 *Date:* ${dateStr}\n`;
+      text += `⏰ *Time:* ${state.selectedTime || 'Evening'}\n`;
+      text += `📍 *Venue:* ${state.selectedLocation || 'Surprise venue'}\n`;
+      text += `👗 *Style:* ${state.selectedOutfit || 'Casual'}\n`;
+      if (state.personalMessage) text += `💬 *Note:* "${state.personalMessage}"\n`;
+      text += `============================\n`;
+      text += `🖼️ *Host Photo:* ${photoUrl}\n\n`;
+      text += `✨ *View Interactive Invitation:* https://mohit-lala.vercel.app/`;
       return text;
     }
 
